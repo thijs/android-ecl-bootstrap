@@ -17,6 +17,7 @@ class EmbeddedCommonLisp {
   external fun JNIstart(path: String)
 
   fun initialize(context: Context) {
+    /* replace this with your own compiled Lisp files */
     copyFasFile(context, "module.fas")
   }
 

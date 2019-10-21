@@ -109,11 +109,44 @@ find . -path ./.git -prune -o -type f -exec sed -i 's/org.example.testapp/com.fa
 find . -path ./.git -prune -o -type f -exec sed -i 's/testapp/clftw/g' '{}' \;
 ````
 
+You might also want to grep for `TAG` and replace that with your own
+tag so you can find the log messages your app sends to logcat easily.
+
 * You should now be able to build (and install) your app:
 ````bash
+./start.sh             # unless you're already inside the docker container
 cd ~/code/clftw
 ./2-build-and-install install
 ````
 
 # Next steps
 
+## Figuring out how it all connects
+
+If you look in `example/app/src/main/java/org/example/testapp/` you'll
+find two `kotlin` source files: `MainActivity.kt` and
+`EmbeddedCommonLisp.kt`.
+
+`MainActivity.kt` is where your app starts. This is just a bare
+template adapted from the default that Android Studio gives you if you
+select an `Native C++` project to start.
+
+`MainActivity.kt` uses the other file (`EmbeddedCommonLisp.kt`),
+creating a private `ECL` instance, which it first calls `initialize`
+on, then `start`.
+
+In `initialize` we copy the dummy `.fas` file we built (`module.fas`)
+to a place where we can access it later on. You should replace this
+line with your own lines to copy the compiled Lisp files you've
+created for your project (see below).
+
+Next the call to `ECL.start` calls the JNI function `JNIstart` defined
+in `example/app/src/main/cpp/src/cxx/main.cpp`. In that file you'll
+see that the function is actually called
+`Java_org_example_testapp_EmbeddedCommonLisp_JNIstart` which is JNI's
+way to automatically discover native functions. This function does
+just the bare minimum, logging some stuff and then calling `ecl_boot`,
+defined in `ecl_boot.cpp` in the same directory.
+
+The function `ecl_boot` sets up our Lisp environment, and loads the
+`module.fas` we copied to the correct location earlier.
