@@ -167,6 +167,15 @@ The example as setup actually builds two seperate `.fas` files
 (`module.fas` and `other.fas`), although only one is actually used in
 the rest of the example project code.
 
+If you add the three required files (`.asd`, `.deps`, and `.lisp` (and
+however many more `.lisp` files you need, of course)) for another
+module, the Makefile will automatically pick it up and build the
+`.fas` for you when you run `./2-build-and-install`, and copy it to
+the correct place.
+
+Be aware, though, that *all* built `.fas` files will be included in
+your app's `apk`, so don't put stuff here you don't want included.
+
 ### Dependency files (`.deps`)
 
 The `.deps` files should `quickload` all the required dependencies of
