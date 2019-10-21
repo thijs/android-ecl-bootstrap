@@ -6,14 +6,15 @@ Bootstrap repo for ECL on android
 This repo demonstrates how to build an Android app that uses ECL
 Common Lisp code.
 
-A lot of it has been collected and adapted from other sources, the
-most significant being:
+Thanks to the following projects for inspiraition and guidance:
 
 * [ECL](https://gitlab.com/embeddable-common-lisp/ecl) itself,
   specifically the `android` example
 
 * [EQL](https://gitlab.com/eql/EQL5) and
   [EQL5-Android](https://gitlab.com/eql/EQL5-Android), most especially
-  the examples `REPL` and `my` in EQL5-Android
+  the examples `REPL` and `my` in EQL5-Android, as well as the code to
+  cross-compile for Android in the `utils` directory
 
-* 
+Some code has been copied/adapted from `EQL` and `EQL5-Android`.
+
