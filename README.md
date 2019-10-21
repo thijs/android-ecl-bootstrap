@@ -2,7 +2,7 @@
 
 Bootstrap repo for ECL on android
 
-## Build Android apps using ECL
+## Build Android apps using Embeddable Common Lisp
 
 This repo demonstrates how to build an Android app that uses ECL
 Common Lisp code.
@@ -109,7 +109,11 @@ find . -path ./.git -prune -o -type f -exec sed -i 's/org.example.testapp/com.fa
 find . -path ./.git -prune -o -type f -exec sed -i 's/testapp/clftw/g' '{}' \;
 ````
 
-* You should now be able to build (and install) your app
+* You should now be able to build (and install) your app:
+````bash
+cd ~/code/clftw
+./2-build-and-install install
+````
 
 # Next steps
 
