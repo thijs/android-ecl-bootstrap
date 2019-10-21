@@ -15,3 +15,4 @@
 xc-lisp/files.txt
 xc-lisp/build/
 *.o
+app/build.gradle

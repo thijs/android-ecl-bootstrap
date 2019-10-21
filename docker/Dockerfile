@@ -28,6 +28,7 @@ RUN apt-get update && apt-get install -y \
     gettext-base \
     git \
     gpg \
+    gpg-agent \
     less \
     libgcc1 \
     libncurses5 \

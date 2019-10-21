@@ -21,6 +21,8 @@ Some code has been copied/adapted from `EQL` and `EQL5-Android`.
 
 # Getting started
 
+## Initial one time docker build
+
 The simple way is to build the docker container and use it to
 cross-compile and build your Android app:
 
@@ -28,6 +30,8 @@ cross-compile and build your Android app:
 export USER=<your user nick>  # optional and maybe not needed, check: env | grep USER
 ./build.sh
 ````
+
+## Building an app
 
 Now you should have a docker container named `android-ecl-bootstrap`,
 which you can start by doing:
@@ -47,7 +51,13 @@ cd code/example
 ./2-build-and-install.sh
 ````
 
-On the first run it'll download and install a bunch of stuff.
+On the first run it'll download and install a bunch of stuff, which is
+saved in your mounted home directory (see `start.sh`; by default this
+is at `$HOME/docker.state/android-ecl-bootstrap`). You can remove this
+line, if you want, but then each time you start the docker container
+it will be blank and redownload everything.
+
+The first run can take a couple of minutes to finish.
 
 If there were no errors, you should find an apk at
 `app/build/outputs/apk/debug/app-debug.apk`
@@ -59,4 +69,10 @@ fixed IP address and change `ANDROID_IP` in `start.sh` to reflect that
 IP.
 
 Alternatively, you can always manually connect your mobile test device
-through `adb` before running `./2-build-and-install install`.
+through `adb` before running `./2-build-and-install install`. Do
+something like this (in the running docker container, obviously):
+
+````bash
+adb connect <mobile device IP>:<port>
+````
+

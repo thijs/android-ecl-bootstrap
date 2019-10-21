@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ! -f ${HOME}/quicklisp/quicklisp.lisp ]; then
+if [ ! -f ${HOME}/quicklisp/setup.lisp ]; then
     ./install-quicklisp.sh || exit 1
 fi
 
