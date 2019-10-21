@@ -34,8 +34,8 @@ export USER=<your user nick>  # optional and maybe not needed, check: env | grep
 
 ## Building an app
 
-Now you should have a docker container named `android-ecl-bootstrap`,
-which you can start by doing:
+Now (after a quite lengthy build process) you should have a docker
+container named `android-ecl-bootstrap`, which you can start by doing:
 
 ````bash
 export CODE_DIR=<your fully qualified code location>  # optional
@@ -54,9 +54,10 @@ cd code/example
 
 On the first run it'll download and install a bunch of stuff, which is
 saved in your mounted home directory (see `start.sh`; by default this
-is at `$HOME/docker.state/android-ecl-bootstrap`). You can remove this
-line, if you want, but then each time you start the docker container
-it will be blank and redownload everything.
+is at `$HOME/docker.state/android-ecl-bootstrap` on your host
+machine). You can remove this line, if you want, but then each time
+you start the docker container it will be blank and redownload
+everything.
 
 The first run can take a couple of minutes to finish.
 
@@ -96,8 +97,12 @@ to build your own app.
 
 I suggest the following procedure:
 
-* Make a copy of `example` to your code directory (see `CODE_DIR` env)
+* Make a copy of `example` to your code directory (see `CODE_DIR` env).
 
-* Put your new copy into some source code control system
+* Put your new copy into some source code control system.
 
-* 
+* Replace all mentions of `org.example.testapp` with your own app
+  name. If your app is `com.fancydomain.clftw`, do:
+````bash
+find . -path ./.git -prune -o -type f -exec sed -i 's/org.example.testapp/com.fancydomain.clftw/g' '{}' \;
+````
