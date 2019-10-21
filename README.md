@@ -25,7 +25,7 @@ The simple way is to build the docker container and use it to
 cross-compile and build your Android app:
 
 ````bash
-export USER=<your user nick>  # optional
+export USER=<your user nick>  # optional and maybe not needed, check: env | grep USER
 ./build.sh
 ````
 
