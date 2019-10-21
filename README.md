@@ -64,14 +64,14 @@ The first run can take a couple of minutes to finish.
 If there were no errors, you should find an apk at
 `app/build/outputs/apk/debug/app-debug.apk`
 
-If you pass `install` as an argument to `2-build-and-install`, it will
-attempt to install the app on your connected phone. For this to work,
-ideally you should setup your network to provide your phone with a
-fixed IP address and change `ANDROID_IP` in `start.sh` to reflect that
-IP.
+If you pass `install` as an argument to `2-build-and-install.sh`, it
+will attempt to install the app on your connected phone. For this to
+work, ideally you should setup your network to provide your phone with
+a fixed IP address and change `ANDROID_IP` in `start.sh` to reflect
+that IP.
 
 Alternatively, you can always manually connect your mobile test device
-through `adb` before running `./2-build-and-install install`. Do
+through `adb` before running `./2-build-and-install.sh install`. Do
 something like this (in the running docker container, obviously):
 
 ````bash
@@ -116,7 +116,7 @@ tag so you can find the log messages your app sends to logcat easily.
 ````bash
 ./start.sh             # unless you're already inside the docker container
 cd ~/code/clftw
-./2-build-and-install install
+./2-build-and-install.sh install
 ````
 
 # Next steps
@@ -170,7 +170,7 @@ the rest of the example project code.
 If you add the three required files (`.asd`, `.deps`, and `.lisp` (and
 however many more `.lisp` files you need, of course)) for another
 module, the Makefile will automatically pick it up and build the
-`.fas` for you when you run `./2-build-and-install`, and copy it to
+`.fas` for you when you run `./2-build-and-install.sh`, and copy it to
 the correct place for inclusion in the `assets` of your app.
 
 Be aware, though, that **all** built `.fas` files will be included in
