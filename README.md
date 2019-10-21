@@ -171,9 +171,9 @@ If you add the three required files (`.asd`, `.deps`, and `.lisp` (and
 however many more `.lisp` files you need, of course)) for another
 module, the Makefile will automatically pick it up and build the
 `.fas` for you when you run `./2-build-and-install`, and copy it to
-the correct place.
+the correct place for inclusion in the `assets` of your app.
 
-Be aware, though, that *all* built `.fas` files will be included in
+Be aware, though, that **all** built `.fas` files will be included in
 your app's `apk`, so don't put stuff here you don't want included.
 
 ### Dependency files (`.deps`)
