@@ -129,7 +129,7 @@ find two `kotlin` source files: `MainActivity.kt` and
 
 `MainActivity.kt` is where your app starts. This is just a bare
 template adapted from the default that Android Studio gives you if you
-select an `Native C++` project to start.
+select a `Native C++` project to start.
 
 `MainActivity.kt` uses the other file (`EmbeddedCommonLisp.kt`),
 creating a private `ECL` instance, which it first calls `initialize`
@@ -144,9 +144,25 @@ Next the call to `ECL.start` calls the JNI function `JNIstart` defined
 in `example/app/src/main/cpp/src/cxx/main.cpp`. In that file you'll
 see that the function is actually called
 `Java_org_example_testapp_EmbeddedCommonLisp_JNIstart` which is JNI's
-way to automatically discover native functions. This function does
-just the bare minimum, logging some stuff and then calling `ecl_boot`,
-defined in `ecl_boot.cpp` in the same directory.
+way to automatically discover native functions. You should also take
+note of the matching `external fun` declaration in
+`EmbeddedCommonLisp.kt`.
+
+This function does just the bare minimum, logging some stuff and then
+calling `ecl_boot`, defined in `ecl_boot.cpp` in the same directory.
 
 The function `ecl_boot` sets up our Lisp environment, and loads the
 `module.fas` we copied to the correct location earlier.
+
+## Building your own Lisp module `.fas` files
+
+In `example/app/src/main/lisp/module` you'll find complete examples of
+how to build the Lisp code for your project. In principle the only
+files you'd need to change are the `.asd`, the `.deps` and the `.lisp`
+files.
+
+The seperate package files are of course not strictly necessary.
+
+The example as setup actually builds two seperate `.fas` files
+(`module.fas` and `other.fas`), although only one is actually used in
+the rest of the example project code.
