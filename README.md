@@ -1,4 +1,5 @@
 # android-ecl-bootstrap
+
 Bootstrap repo for ECL on android
 
 ## Build Android apps using ECL
@@ -76,3 +77,27 @@ something like this (in the running docker container, obviously):
 adb connect <mobile device IP>:<port>
 ````
 
+## Without docker
+
+If you don't want to use docker (why?) you will need to setup your
+build environment yourself. You're on your own there, but if you
+basically perform all the actions defined in the Dockerfile (adapted
+to correct paths, etc), you should be able to get things up and
+running.
+
+# Roll your own
+
+This repo serves as a proof of concept for building Android apps with
+Common Lisp using ECL. In the `example` directory you'll find
+everything to build the example app.
+
+It should be fairly straightforward to adapt it and use it as a base
+to build your own app.
+
+I suggest the following procedure:
+
+* Make a copy of `example` to your code directory (see `CODE_DIR` env)
+
+* Put your new copy into some source code control system
+
+* 

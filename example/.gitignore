@@ -16,3 +16,6 @@ xc-lisp/files.txt
 xc-lisp/build/
 *.o
 app/build.gradle
+fas/
+*.flist
+app/src/main/libs/
