@@ -167,6 +167,8 @@ The example as setup actually builds two seperate `.fas` files
 (`module.fas` and `other.fas`), although only one is actually used in
 the rest of the example project code.
 
+## Dependency files (`.deps`)
+
 The `.deps` files should `quickload` all the required dependencies of
 your module. Basically, every `:depends-on` entry in your `.asd` file
 should have a corresponding `(ql:quickload ..)` line in the `.deps`
