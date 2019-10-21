@@ -7,9 +7,9 @@ fi
 
 VER=$(cat .version)
 
-VERSION_CODE=$((VER + 1)) \
-            VERSION_STRING="0.0.${VERSION_CODE}" \
-            cat app/build.gradle.source | envsubst > app/build.gradle
+export VERSION_CODE=$((VER + 1))
+export VERSION_STRING="0.0.${VERSION_CODE}"
+cat app/build.gradle.source | envsubst > app/build.gradle
 
 echo Building version $((VER + 1))
 

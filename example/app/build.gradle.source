@@ -11,7 +11,7 @@ android {
         applicationId "org.example.testapp"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode ${VER}
+        versionCode ${VERSION_CODE}
         versionName "${VERSION_STRING}"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {

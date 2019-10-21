@@ -11,9 +11,9 @@ src=$(wildcard src/*.lisp)
 utils=../utils/cross-compile-64.lisp ../utils/make.lisp ../utils/make-ASDF.lisp
 pthread_dep=$(ANDROID_NDK_TOOLCHAIN_64)/sysroot/usr/lib/aarch64-linux-android/libpthread.a
 
-$(info $(systems))
-$(info $(ffas))
-$(info $(fass))
+# $(info $(systems))
+# $(info $(ffas))
+# $(info $(fass))
 
 
 all: $(ffas)
