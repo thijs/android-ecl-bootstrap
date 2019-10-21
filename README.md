@@ -18,3 +18,14 @@ Thanks to the following projects for inspiraition and guidance:
 
 Some code has been copied/adapted from `EQL` and `EQL5-Android`.
 
+
+# Getting started
+
+The simple way is to build the docker container and use it to
+cross-compile and build your Android app:
+
+````bash
+export USER=<your user nick>  # optional
+
+./build.sh
+````
