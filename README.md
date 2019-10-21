@@ -104,5 +104,12 @@ I suggest the following procedure:
 * Replace all mentions of `org.example.testapp` with your own app
   name. If your app is `com.fancydomain.clftw`, do:
 ````bash
+find . -path ./.git -prune -o -type f -exec sed -i 's/org_example_testapp/com_fancydomain_clftw/g' '{}' \;
 find . -path ./.git -prune -o -type f -exec sed -i 's/org.example.testapp/com.fancydomain.clftw/g' '{}' \;
+find . -path ./.git -prune -o -type f -exec sed -i 's/testapp/clftw/g' '{}' \;
 ````
+
+* You should now be able to build (and install) your app
+
+# Next steps
+
