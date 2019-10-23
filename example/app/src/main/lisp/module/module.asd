@@ -21,6 +21,7 @@
                                      )
                         ))
   :depends-on (
+               :bordeaux-threads
                )
   )
 

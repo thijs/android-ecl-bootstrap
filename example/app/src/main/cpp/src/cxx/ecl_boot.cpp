@@ -105,6 +105,19 @@ int ecl_boot(const char *root_dir) {
      ("(dolist (item (si:environ)) (android-log (format nil \"~s\" item)))"),
      Cnil, OBJNULL);
 
+  // load asdf
+  si_safe_eval(3, c_string_to_object("(load (format nil \"~aasdf.fas\" (si:getenv \"ECLDIR\")))"), Cnil, OBJNULL);
+  si_safe_eval(3, c_string_to_object("(push (si:getenv \"ECLDIR\") asdf:*central-registry*)"), Cnil, OBJNULL);
+  
+  si_safe_eval
+    (3, c_string_to_object
+     ("(android-log (format nil \"require sb-bsd-sockets: ~s\" (require :SB-BSD-SOCKETS)))"),
+     Cnil, OBJNULL);
+  si_safe_eval
+    (3, c_string_to_object
+     ("(android-log (format nil \"sb-bsd-sockets: ~s\" (find-package \"SB-BSD-SOCKETS\")))"),
+     Cnil, OBJNULL);
+
   si_safe_eval
     (3, c_string_to_object
      ("(android-log (format nil \"ECLDIR: ~s\" (si:getenv \"ECLDIR\")))"),
@@ -122,11 +135,8 @@ int ecl_boot(const char *root_dir) {
      ("(android-log (format nil \"truename: ~s\" (truename (format nil \"~amodule.fas\" (si:getenv \"ECLDIR\")))))"),
      Cnil, OBJNULL);
 
-  // load a Lisp module
-  si_safe_eval
-    (3, c_string_to_object
-     ("(load (format nil \"~amodule.fas\" (si:getenv \"ECLDIR\")))"),
-     Cnil, OBJNULL);
+  // load all modules (defined through load.lisp during build, see Makefile and utils/)
+  si_safe_eval(3, c_string_to_object("(load (format nil \"~aload.lisp\" (si:getenv \"ECLDIR\")))"), Cnil, OBJNULL);
 
   si_safe_eval
     (3, c_string_to_object
@@ -134,9 +144,22 @@ int ecl_boot(const char *root_dir) {
      Cnil, OBJNULL);
   si_safe_eval
     (3, c_string_to_object
-     ("(android-log (format nil \"dummy fn: ~s\" (find-symbol \"DUMMY\" :MODULE)))"),
+     ("(android-log (format nil \"android-log: ~s\" (multiple-value-list (find-symbol \"CL-USER::ANDROID-LOG\"))))"),
      Cnil, OBJNULL);
-  
+  si_safe_eval
+    (3, c_string_to_object
+     ("(android-log (format nil \"current package: ~s\" *package*))"),
+     Cnil, OBJNULL);
+
+  si_safe_eval
+    (3, c_string_to_object
+     ("(android-log (format nil \"dummy: ~a\" (module::dummy)))"),
+     Cnil, OBJNULL);
+  si_safe_eval
+    (3, c_string_to_object
+     ("(android-log (format nil \"dummy-bt: ~a\" (module::dummy-bt)))"),
+     Cnil, OBJNULL);
+
   return 0;
 }
 

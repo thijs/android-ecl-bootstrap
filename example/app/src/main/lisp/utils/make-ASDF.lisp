@@ -15,19 +15,15 @@
 
 (format t "*target* = ~s~%" *target*)
 
-;; redefine LOAD
-
 (defparameter *pwd* (si:getenv "PWD"))
 (defparameter *files-location* (format nil "~a.flist" *target*))
-
-;;(format t "env:~%~s" (si:environ))
-(format t "~&current dir: ~s~%" *pwd*)
 
 (ext:package-lock :common-lisp nil)
 
 (defvar *load-orig* (symbol-function 'load))
 (defvar *files*     nil)
 
+;; redefine LOAD
 (defun load (&rest args)
   (let* ((str (namestring (first args)))
          (name (subseq str 0 (position #\. str :from-end t))))
@@ -46,17 +42,22 @@
   (setf *cache-location-index* (length cache-location)))
 
 ;; load here (not earlier)
-(load (format nil "~a/~a.deps" *pwd* *target*))
+(when (probe-file (format nil "~a/~a.deps" *pwd* *target*))
+  (format t "~&loading .deps file~%")
+  (load (format nil "~a/~a.deps" *pwd* *target*)))
 
-;; dummy load to collect all file names
 (push "./" asdf:*central-registry*)
 (push (format nil "~a/" *pwd*) asdf:*central-registry*)
 
+;; dummy load to collect all file names
 (asdf:load-system (intern *target* "KEYWORD"))
+
+(defparameter *target-base* (asdf:system-source-directory (intern *target* "KEYWORD")))
 
 ;; extract file name from compile cache name and save file list
 (format t "files: ~s" *files-location*)
 (with-open-file (s *files-location* :direction :output :if-exists :supersede)
+  (write-line (namestring *target-base*) s)
   (setf *files* (nreverse *files*))
   (dolist (file *files*)
     (write-line (subseq file *cache-location-index*) s)))
