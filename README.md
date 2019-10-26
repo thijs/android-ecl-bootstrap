@@ -135,10 +135,9 @@ select a `Native C++` project to start.
 creating a private `ECL` instance, which it first calls `initialize`
 on, then `start`.
 
-In `initialize` we copy the dummy `.fas` file we built (`module.fas`)
-to a place where we can access it later on. You should replace this
-line with your own lines to copy the compiled Lisp files you've
-created for your project (see below).
+In `initialize` we copy all the `.fas`, `.asd` and `.lisp` files we
+added as assets to the app to a place where we can access them later
+on.
 
 Next the call to `ECL.start` calls the JNI function `JNIstart` defined
 in `example/app/src/main/cpp/src/cxx/main.cpp`. In that file you'll
@@ -151,8 +150,15 @@ note of the matching `external fun` declaration in
 This function does just the bare minimum, logging some stuff and then
 calling `ecl_boot`, defined in `ecl_boot.cpp` in the same directory.
 
-The function `ecl_boot` sets up our Lisp environment, and loads the
-`module.fas` we copied to the correct location earlier.
+The function `ecl_boot` sets up our Lisp environment and shows some
+examples how to log to the android log from lisp, how to load other
+parts of the ECL system (see the `// load asdf` part and the calls
+where we `require` `sb-bsd-sockets`) and so on.
+
+Then it loads all the systems we added as assets by loading the file
+`load.lisp`, which was created and added during the app build, see
+`Makefile` in `example/app/src/main/lisp/module` and the supporting
+files in `example/app/src/main/lisp/utils/`.
 
 ## Building your own Lisp module `.fas` files
 
@@ -185,3 +191,28 @@ file of your project. The `.asd` and `.deps` file should have the same
 base filename (and that should be the same as your `defsystem` name
 for Quicklisp/asdf to work). So the system `:module` in the example
 has the files `module.asd` and `module.deps`.
+
+### Separate `.fas` files for dependencies
+
+The way the example is setup, dependencies will be combined with the
+requiring module. Sometimes this results in very large `.fas` files,
+and there is some evidence that this could causes problems with
+loading them in ECL on Android.
+
+The alternative is to seperately add all the `.fas` files and load
+them. To do this, set `FAS_TYPE` at the top of the `Makefile` at
+`example/app/src/main/lisp/module/Makefile` to `seperate` instead of
+`combined`.
+
+Then, instead of symlinking your `.asd` file and creating a `.deps`
+file for the system you want to add, symlink all the `.asd` files of
+dependencies into `example/app/src/main/lisp/module/`.
+
+For this to work, you need to make sure that **all** dependencies are
+added, which includes all dependencies of the dependencies!
+
+Now, when you build you app, you should see all the separate `.fas`
+files created and added to the directory
+`example/app/src/main/lisp/fas/`, as well as a `load.lisp` file in
+that location. The `load.lisp` file should handle all the dependencies
+in the correct order.

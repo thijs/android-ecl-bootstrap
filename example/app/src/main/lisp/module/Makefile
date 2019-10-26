@@ -1,5 +1,5 @@
 # set FAS build type to either `combined` or `separate`
-FAS_TYPE = separate
+FAS_TYPE = combined
 
 BUILD_DIR		= ../fas
 FAS_DIR			= fas
@@ -34,7 +34,7 @@ PTHREAD_DEP = $(ANDROID_NDK_TOOLCHAIN_64)/sysroot/usr/lib/aarch64-linux-android/
 
 all: $(FFAS) | $(TARGET_FAS) $(TARGET_ECL)
 	$(ECL) --shell ../utils/build-load.lisp --type $(FAS_TYPE)
-	rm dependencies.lst
+	rm -f dependencies.lst
 
 $(BUILD_DIR)/%: $(FAS_DIR)/%
 	cp -f $< $@
@@ -59,6 +59,7 @@ clean-fas:
 
 clean:
 	rm -f *.flist
+	rm -f dependencies.lst
 	rm -rf $(DIRS)
 	rm -f src/*.o
 
