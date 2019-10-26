@@ -167,9 +167,14 @@ how to build the Lisp code for your project. In principle the only
 files you'd need to change are the `.asd`, the `.deps` and the `.lisp`
 files.
 
-The seperate package files are of course not strictly necessary.
+You can also symlink only the `.asd` file of your project into this
+directory. It works mostly the same as the `local-projects` directory
+in a `Quicklisp` system, with some added requirements, for which, read
+on.
 
-The example as setup actually builds two seperate `.fas` files
+The separate package files are of course not strictly necessary.
+
+The example as set up actually builds two separate `.fas` files
 (`module.fas` and `other.fas`), although only one is actually used in
 the rest of the example project code.
 
@@ -194,14 +199,14 @@ has the files `module.asd` and `module.deps`.
 
 ### Separate `.fas` files for dependencies
 
-The way the example is setup, dependencies will be combined with the
-requiring module. Sometimes this results in very large `.fas` files,
-and there is some evidence that this could causes problems with
-loading them in ECL on Android.
+The way the example is set up, dependencies will be combined with the
+requiring module in one `.fas` file. Sometimes this results in very
+large `.fas` files, and there is some evidence that this could cause
+problems with loading them in ECL on Android.
 
-The alternative is to seperately add all the `.fas` files and load
+The alternative is to separately add all the `.fas` files and load
 them. To do this, set `FAS_TYPE` at the top of the `Makefile` at
-`example/app/src/main/lisp/module/Makefile` to `seperate` instead of
+`example/app/src/main/lisp/module/Makefile` to `separate` instead of
 `combined`.
 
 Then, instead of symlinking your `.asd` file and creating a `.deps`
