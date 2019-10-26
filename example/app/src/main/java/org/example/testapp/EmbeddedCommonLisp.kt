@@ -17,8 +17,8 @@ class EmbeddedCommonLisp {
   external fun JNIstart(path: String)
 
   fun initialize(context: Context) {
-    /* replace this with your own compiled Lisp files */
-    copyFasFile(context, "module.fas")
+    ensureCacheDir(context)
+    ensureFasFiles(context)
   }
 
   fun start(context: Context) {
@@ -28,23 +28,36 @@ class EmbeddedCommonLisp {
     JNIstart(dir.toString())
   }
 
-  fun copyFasFile(context: Context, path: String): File {
+  fun ensureCacheDir(context: Context) {
     val filesDir = context.getFilesDir()
     val cacheDir = filesDir.resolve(File("lib"))
     if (!cacheDir.isDirectory()) {
       cacheDir.mkdirs()
     }
-    val tmpPath = cacheDir.resolve(path)
-    if( !tmpPath.exists() ) {
+  }
+  
+  fun ensureFasFiles(context: Context) {
+    context.assets.list("")?.forEach {
+      if (it.endsWith(".fas") or
+          it.endsWith(".asd") or
+          it.endsWith(".lisp")) {
+        ensureFasFile(context,it)
+      }
+    }
+  }
+  
+  fun ensureFasFile(context: Context, path: String) {
+    val cacheDir = context.getFilesDir().resolve(File("lib"))
+    val fasPath = cacheDir.resolve(path)
+    if( !fasPath.exists() ) {
       context.assets.open(path).use {
         inStream ->
-          tmpPath.outputStream().use{
+          fasPath.outputStream().use{
             outStream ->
               inStream.copyTo(outStream)
           }
       }
     }
-    return tmpPath
   }
 
   companion object {

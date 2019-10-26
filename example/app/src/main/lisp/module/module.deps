@@ -1,3 +1,4 @@
 ;; This file is loaded as a Lisp source file
 
-;;(ql:quickload :iterate)
+(ql:quickload :alexandria)
+(ql:quickload :bordeaux-threads)

@@ -1,3 +1,5 @@
+# set FAS build type to either `combined` or `separate`
+FAS_TYPE = combined
 
 BUILD_DIR		= ../fas
 FAS_DIR			= fas
@@ -28,9 +30,13 @@ PTHREAD_DEP = $(ANDROID_NDK_TOOLCHAIN_64)/sysroot/usr/lib/aarch64-linux-android/
 # $(info $(ECL_ASD))
 # $(info $(TARGET_ECL))
 
-all: $(FFAS) | $(TARGET_FAS) $(TARGET_ECL)
-	$(ECL) --shell ../utils/build-load.lisp
 
+# If you specify FAS_TYPE=seperate, the order of loading fas becomes important, so we
+# can't just generate `load.lisp`. In that case, YOU NEED TO BUILD it yourself!
+all: $(FFAS) | $(TARGET_FAS) $(TARGET_ECL)
+ifeq ($(FAS_TYPE),combined)
+	$(ECL) --shell ../utils/build-load.lisp
+endif
 
 $(BUILD_DIR)/%: $(FAS_DIR)/%
 	cp -f $< $@
@@ -40,11 +46,11 @@ $(BUILD_DIR)/%: $(ECL_DIR)/%
 
 
 fas/%.fas: %.asd $(LISP_SRC) $(UTILS) | $(PTHREAD_DEP)
-	$(ECL) --shell ../utils/make.lisp --target $<
+	$(ECL) --shell ../utils/make.lisp --type $(FAS_TYPE) --target $<
 
 
 # Build a dummy libpthread.a, as all of pthread is incorporated in android libc already
-$(pthread_dep):
+$(PTHREAD_DEP):
 	$(ANDROID_NDK_TOOLCHAIN_64)/bin/aarch64-linux-android-ar cr $(PTHREAD_DEP)
 
 

@@ -1,7 +1,5 @@
 
-(let ((modules (directory "../fas/*.fas")))
-  (let ((dht (find "cl-dht" modules :test (lambda (item el) (search item (namestring el))))))
-    (setf modules (nreverse (pushnew dht modules))))
+(let ((modules (directory "fas/*.fas")))
   (format t "~&modules: ~a~%" modules)
   (with-open-file (o "../fas/load.lisp" :direction :output :if-exists :supersede)
     (format o "(let ((modules (list ")
@@ -12,5 +10,5 @@
     (format o "))~%")
     (format o "      (dir (si:getenv \"ECLDIR\")))~%")
     (format o "  (dolist (module modules)~%")
-    (format o "    (android-log (format nil \"found ~~a\" module))~%")
+    (format o "    (android-log (format nil \"found ~~a: ~~a\" module (truename (format nil \"~~a~~a.fas\" dir module))))~%")
     (format o "    (android-log (format nil \"loading ~~a: ~~a\" module (load (format nil \"~~a~~a.fas\" dir module))))))~%")))

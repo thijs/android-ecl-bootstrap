@@ -106,6 +106,7 @@ int ecl_boot(const char *root_dir) {
      Cnil, OBJNULL);
 
   // load asdf
+  // si_safe_eval(3, c_string_to_object("(load (format nil \"~acmp.fas\" (si:getenv \"ECLDIR\")))"), Cnil, OBJNULL);
   si_safe_eval(3, c_string_to_object("(load (format nil \"~aasdf.fas\" (si:getenv \"ECLDIR\")))"), Cnil, OBJNULL);
   si_safe_eval(3, c_string_to_object("(push (si:getenv \"ECLDIR\") asdf:*central-registry*)"), Cnil, OBJNULL);
   
@@ -144,7 +145,7 @@ int ecl_boot(const char *root_dir) {
      Cnil, OBJNULL);
   si_safe_eval
     (3, c_string_to_object
-     ("(android-log (format nil \"android-log: ~s\" (multiple-value-list (find-symbol \"CL-USER::ANDROID-LOG\"))))"),
+     ("(android-log (format nil \"android-log: ~s\" (multiple-value-list (find-symbol \"ANDROID-LOG\"))))"),
      Cnil, OBJNULL);
   si_safe_eval
     (3, c_string_to_object

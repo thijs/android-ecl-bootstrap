@@ -1,19 +1,27 @@
 ;;; hack to collect all file names from ASDF system for cross-compiling
 
+(pushnew :android *features*)
+
 (require :asdf)
 ;;(require :sockets)
 (require :sb-bsd-sockets)
 (require :ecl-quicklisp)
 
 (defvar *target*)
+(defvar *type*)
 
 (let* ((cmd-args (ext:command-args))
+       (type-pos (position "--type" cmd-args :test #'string=))
+       (type (if type-pos (nth (+ type-pos 1) cmd-args) "undefined"))
        (target-pos (position "--target" cmd-args :test #'string=)))
   (if target-pos
       (setf *target* (nth (+ target-pos 1) cmd-args))
-      (error "need to specify --target on command-line")))
+      (error "need to specify --target on command-line"))
+  (setf *type* (intern (string-upcase type) "KEYWORD")))
 
 (format t "*target* = ~s~%" *target*)
+(format t "*type* = ~s~%" *type*)
+
 
 (defparameter *pwd* (si:getenv "PWD"))
 (defparameter *files-location* (format nil "~a.flist" *target*))
@@ -57,7 +65,8 @@
 ;; extract file name from compile cache name and save file list
 (format t "files: ~s" *files-location*)
 (with-open-file (s *files-location* :direction :output :if-exists :supersede)
-  (write-line (namestring *target-base*) s)
+  (when (eq *type* :seperate)
+    (write-line (namestring *target-base*) s))
   (setf *files* (nreverse *files*))
   (dolist (file *files*)
     (write-line (subseq file *cache-location-index*) s)))
