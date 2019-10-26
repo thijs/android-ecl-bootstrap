@@ -1,3 +1,5 @@
+(load "../utils/utils")
+
 (pushnew :android *features*)
 
 (defvar *target*)
@@ -65,7 +67,7 @@
 (defvar all-files)
 (defvar fas-files)
 
-(if (eq *type* :seperate)
+(if (eq *type* :separate)
     (progn
       (setf base-path (first *files*))
       (setf all-files (rest *files*))

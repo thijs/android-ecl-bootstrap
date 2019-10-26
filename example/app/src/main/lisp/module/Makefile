@@ -1,5 +1,5 @@
 # set FAS build type to either `combined` or `separate`
-FAS_TYPE = combined
+FAS_TYPE = separate
 
 BUILD_DIR		= ../fas
 FAS_DIR			= fas
@@ -18,9 +18,10 @@ ECL_FAS			= $(patsubst $(ECL_DIR)/%,%,$(wildcard $(ECL_DIR)/*.fas))
 ECL_ASD			= $(patsubst $(ECL_DIR)/%,%,$(wildcard $(ECL_DIR)/*.asd))
 TARGET_ECL	= $(patsubst %,$(BUILD_DIR)/%,$(ECL_FAS)) $(patsubst %,$(BUILD_DIR)/%,$(ECL_ASD))
 
-UTILS				= ../utils/cross-compile-64.lisp ../utils/make.lisp ../utils/make-ASDF.lisp
+UTILS				= $(wildcard ../utils/*.lisp)
 PTHREAD_DEP = $(ANDROID_NDK_TOOLCHAIN_64)/sysroot/usr/lib/aarch64-linux-android/libpthread.a
 
+# $(info $(UTILS))
 # $(info $(SYSTEMS))
 # $(info $(FFAS))
 # $(info $(FASS))
@@ -31,12 +32,9 @@ PTHREAD_DEP = $(ANDROID_NDK_TOOLCHAIN_64)/sysroot/usr/lib/aarch64-linux-android/
 # $(info $(TARGET_ECL))
 
 
-# If you specify FAS_TYPE=seperate, the order of loading fas becomes important, so we
-# can't just generate `load.lisp`. In that case, YOU NEED TO BUILD it yourself!
 all: $(FFAS) | $(TARGET_FAS) $(TARGET_ECL)
-ifeq ($(FAS_TYPE),combined)
-	$(ECL) --shell ../utils/build-load.lisp
-endif
+	$(ECL) --shell ../utils/build-load.lisp --type $(FAS_TYPE)
+	rm dependencies.lst
 
 $(BUILD_DIR)/%: $(FAS_DIR)/%
 	cp -f $< $@
@@ -46,6 +44,7 @@ $(BUILD_DIR)/%: $(ECL_DIR)/%
 
 
 fas/%.fas: %.asd $(LISP_SRC) $(UTILS) | $(PTHREAD_DEP)
+	touch dependencies.lst
 	$(ECL) --shell ../utils/make.lisp --type $(FAS_TYPE) --target $<
 
 

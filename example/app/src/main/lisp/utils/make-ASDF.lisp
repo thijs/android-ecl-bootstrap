@@ -1,5 +1,7 @@
 ;;; hack to collect all file names from ASDF system for cross-compiling
 
+(load "../utils/utils")
+
 (pushnew :android *features*)
 
 (require :asdf)
@@ -17,14 +19,19 @@
   (if target-pos
       (setf *target* (nth (+ target-pos 1) cmd-args))
       (error "need to specify --target on command-line"))
-  (setf *type* (intern (string-upcase type) "KEYWORD")))
+  (setf *type* (makekw type)))
 
 (format t "*target* = ~s~%" *target*)
 (format t "*type* = ~s~%" *type*)
 
-
 (defparameter *pwd* (si:getenv "PWD"))
 (defparameter *files-location* (format nil "~a.flist" *target*))
+(defparameter *dependencies-location* "dependencies.lst")
+
+(defun save-dependencies (system-designator system)
+  (let ((depends-on (map 'list #'makekw (asdf:system-depends-on system))))
+    (with-open-file (d *dependencies-location* :direction :output :if-exists :append)
+      (format d "~s (~{~s~^ ~})~%" system-designator depends-on))))
 
 (ext:package-lock :common-lisp nil)
 
@@ -57,18 +64,23 @@
 (push "./" asdf:*central-registry*)
 (push (format nil "~a/" *pwd*) asdf:*central-registry*)
 
-;; dummy load to collect all file names
-(asdf:load-system (intern *target* "KEYWORD"))
+(let ((system-designator (makekw *target*)))
 
-(defparameter *target-base* (asdf:system-source-directory (intern *target* "KEYWORD")))
+  ;; dummy load to collect all file names
+  (asdf:load-system system-designator)
 
-;; extract file name from compile cache name and save file list
-(format t "files: ~s" *files-location*)
-(with-open-file (s *files-location* :direction :output :if-exists :supersede)
-  (when (eq *type* :seperate)
-    (write-line (namestring *target-base*) s))
-  (setf *files* (nreverse *files*))
-  (dolist (file *files*)
-    (write-line (subseq file *cache-location-index*) s)))
+  (let* ((target-base (namestring (asdf:system-source-directory system-designator)))
+         (system (asdf:find-system system-designator)))
+
+    (save-dependencies system-designator system)
+
+    ;; extract file name from compile cache name and save file list
+    (format t "files: ~s" *files-location*)
+    (with-open-file (s *files-location* :direction :output :if-exists :supersede)
+      (when (eq *type* :separate)
+        (write-line target-base s))
+      (setf *files* (nreverse *files*))
+      (dolist (file *files*)
+        (write-line (subseq file *cache-location-index*) s)))))
 
 (format t "~%~D files~%~%" (length *files*))
