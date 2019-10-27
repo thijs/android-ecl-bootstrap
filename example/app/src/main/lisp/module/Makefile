@@ -1,24 +1,24 @@
 # set FAS build type to either `combined` or `separate`
 FAS_TYPE = combined
 
-BUILD_DIR		= ../fas
-FAS_DIR			= fas
-DIRS				= $(BUILD_DIR) $(FAS_DIR)
-ECL					= $(HOST_ECL)/bin/ecl -norc
+BUILD_DIR   = ../fas
+FAS_DIR     = fas
+DIRS        = $(BUILD_DIR) $(FAS_DIR)
+ECL         = $(HOST_ECL)/bin/ecl -norc
 
-SYSTEMS			= $(wildcard *.asd)
-FASS				= $(SYSTEMS:.asd=.fas)
-FFAS				= $(patsubst %,$(FAS_DIR)/%,$(FASS))
-TARGET_FAS	= $(patsubst %,$(BUILD_DIR)/%,$(FASS))
+SYSTEMS     = $(wildcard *.asd)
+FASS        = $(SYSTEMS:.asd=.fas)
+FFAS        = $(patsubst %,$(FAS_DIR)/%,$(FASS))
+TARGET_FAS  = $(patsubst %,$(BUILD_DIR)/%,$(FASS))
 
-LISP_SRC		= $(wildcard src/*.lisp)
+LISP_SRC    = $(wildcard src/*.lisp)
 
-ECL_DIR			= $(ECL_LIBRARY)/ecl-16.1.3
-ECL_FAS			= $(patsubst $(ECL_DIR)/%,%,$(wildcard $(ECL_DIR)/*.fas))
-ECL_ASD			= $(patsubst $(ECL_DIR)/%,%,$(wildcard $(ECL_DIR)/*.asd))
-TARGET_ECL	= $(patsubst %,$(BUILD_DIR)/%,$(ECL_FAS)) $(patsubst %,$(BUILD_DIR)/%,$(ECL_ASD))
+ECL_DIR     = $(ECL_LIBRARY)/ecl-16.1.3
+ECL_FAS     = $(patsubst $(ECL_DIR)/%,%,$(wildcard $(ECL_DIR)/*.fas))
+ECL_ASD     = $(patsubst $(ECL_DIR)/%,%,$(wildcard $(ECL_DIR)/*.asd))
+TARGET_ECL  = $(patsubst %,$(BUILD_DIR)/%,$(ECL_FAS)) $(patsubst %,$(BUILD_DIR)/%,$(ECL_ASD))
 
-UTILS				= $(wildcard ../utils/*.lisp)
+UTILS       = $(wildcard ../utils/*.lisp)
 PTHREAD_DEP = $(ANDROID_NDK_TOOLCHAIN_64)/sysroot/usr/lib/aarch64-linux-android/libpthread.a
 
 # $(info $(UTILS))
@@ -34,7 +34,7 @@ PTHREAD_DEP = $(ANDROID_NDK_TOOLCHAIN_64)/sysroot/usr/lib/aarch64-linux-android/
 
 all: $(FFAS) | $(TARGET_FAS) $(TARGET_ECL)
 	$(ECL) --shell ../utils/build-load.lisp --type $(FAS_TYPE)
-	rm -f dependencies.lst
+
 
 $(BUILD_DIR)/%: $(FAS_DIR)/%
 	cp -f $< $@
@@ -42,9 +42,7 @@ $(BUILD_DIR)/%: $(FAS_DIR)/%
 $(BUILD_DIR)/%: $(ECL_DIR)/%
 	cp -f $< $@
 
-
 fas/%.fas: %.asd $(LISP_SRC) $(UTILS) | $(PTHREAD_DEP)
-	touch dependencies.lst
 	$(ECL) --shell ../utils/make.lisp --type $(FAS_TYPE) --target $<
 
 
