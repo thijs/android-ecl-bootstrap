@@ -5,7 +5,8 @@
 FROM alpine AS downloads
 
 # Don't use ADD as this will download every time...
-RUN cd / && wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+RUN cd / && wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip \
+ && wget https://dl.google.com/android/repository/lldb-3.1.4508709-linux-x86_64.zip
 
 
 FROM ubuntu:18.04
@@ -69,10 +70,10 @@ USER $user
 
 ENV ANDROID_PLATFORM=21
 ENV ANDROID_TARGET_PLATFORM=29
-ENV BUILD_TOOLS_VER="29.0.2"
+ENV BUILD_TOOLS_VER="29.0.3"
 ENV CMAKE_VER="3.10.2.4988404"
 ENV LLDB_VER="3.1"
-ENV NDK_VER="20.0.5594570"
+ENV NDK_VER="21.2.6472646"
 
 COPY --from=downloads /sdk-tools-linux-*.zip ${ANDROID_ROOT}/
 RUN cd ${ANDROID_ROOT} && unzip sdk-tools-linux-*.zip \
@@ -84,11 +85,12 @@ RUN cd ${ANDROID_ROOT} && unzip sdk-tools-linux-*.zip \
  && ./bin/sdkmanager --install "tools" \
  && ./bin/sdkmanager --install "platform-tools" \
  && ./bin/sdkmanager --install "cmake;${CMAKE_VER}" \
- && ./bin/sdkmanager --install "lldb;${LLDB_VER}" \
  && ./bin/sdkmanager --install "ndk;${NDK_VER}" \
  && ./bin/sdkmanager --install "platforms;android-${ANDROID_PLATFORM}" \
  && ./bin/sdkmanager --install "platforms;android-${ANDROID_TARGET_PLATFORM}" \
- && ./bin/sdkmanager --install "build-tools;${BUILD_TOOLS_VER}"
+ && ./bin/sdkmanager --install "build-tools;${BUILD_TOOLS_VER}" \
+ && ./bin/sdkmanager --install "cmdline-tools;latest" \
+ && ./bin/sdkmanager --list
 
 ENV HOST_ECL="/opt/ecl-android-host"
 ENV TARGET_ECL="/opt/ecl-android-target"

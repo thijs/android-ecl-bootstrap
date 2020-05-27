@@ -9,6 +9,6 @@ set -x
             --enable-manual=no \
             --disable-c99complex \
             CC=clang
-make
+make -j4
 make install
 rm -r build

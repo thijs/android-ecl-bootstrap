@@ -18,10 +18,13 @@ export STRIP=$ANDROID_NDK_TOOLCHAIN_64/bin/aarch64-linux-android-strip
 export ECL_TO_RUN=${HOST_ECL}/bin/ecl
 
 ./configure --host=aarch64-linux-android \
-            --enable-debug \
-            --enable-boehm=included \
             --disable-c99complex \
+            --enable-manual=no \
             --prefix=${TARGET_ECL} \
             --with-cross-config=`pwd`/src/util/android-arm64.cross_config
-make
+
+#            --enable-debug \
+#            --enable-boehm=included \
+
+make -j4
 make install

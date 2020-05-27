@@ -24,7 +24,7 @@
 #include "ecl_boot.h"
 
 #define DEFUN(name,fun,args) \
- cl_def_c_function(c_string_to_object(name), \
+ ecl_def_c_function(c_string_to_object(name), \
  (cl_objectfn_fixed)fun, \
  args)
 
