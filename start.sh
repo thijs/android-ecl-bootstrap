@@ -5,7 +5,7 @@ if [ -z "$HOME" -o -z "$USER" ]; then
     exit 0
 fi
 
-# set CODE_DIR env to point to your own code directory is needed
+# set CODE_DIR env to point to your own code directory if needed
 CODE_DIR="${CODE_DIR:-${HOME}/code}"
 
 mkdir -p $HOME/docker.state/android-ecl-bootstrap
