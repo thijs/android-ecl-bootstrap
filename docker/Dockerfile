@@ -4,8 +4,9 @@
 # only used for caching (large) downloads
 FROM alpine AS downloads
 
-# Don't use ADD as this will download every time...
-RUN cd / && wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip \
+# Don't use ADD because that will download every time...
+RUN cd / \
+ && wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip \
  && wget https://dl.google.com/android/repository/lldb-3.1.4508709-linux-x86_64.zip
 
 
