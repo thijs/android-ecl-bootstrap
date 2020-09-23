@@ -6,9 +6,7 @@ FROM alpine AS downloads
 
 # Don't use ADD because that will download every time...
 RUN cd / \
- && wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip \
- && wget https://dl.google.com/android/repository/lldb-3.1.4508709-linux-x86_64.zip
-
+ && wget https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
 
 FROM ubuntu:18.04
 MAINTAINER Thijs Oppermann <thijso@gmail.com>
@@ -69,24 +67,28 @@ RUN mkdir -p ${ANDROID_ROOT} \
 
 USER $user
 
+ENV ANDROID_HOME="${ANDROID_ROOT}"
+
 ENV ANDROID_PLATFORM=21
-ENV ANDROID_TARGET_PLATFORM=29
-ENV BUILD_TOOLS_VER="29.0.3"
+ENV ANDROID_TARGET_PLATFORM=30
+ENV BUILD_TOOLS_VER="30.0.2"
 ENV CMAKE_VER="3.10.2.4988404"
 ENV LLDB_VER="3.1"
 ENV NDK_VER="21.2.6472646"
 
-COPY --from=downloads /sdk-tools-linux-*.zip ${ANDROID_ROOT}/
-RUN cd ${ANDROID_ROOT} && unzip sdk-tools-linux-*.zip \
- && sudo rm sdk-tools-linux-*.zip \
- && mkdir sdk \
- && mv tools sdk/ \
- && cd ${ANDROID_ROOT}/sdk/tools \
+COPY --from=downloads /commandlinetools-linux-*.zip ${ANDROID_ROOT}/
+RUN cd ${ANDROID_ROOT} && unzip commandlinetools-linux-*.zip \
+ && sudo rm commandlinetools-linux-*.zip \
+ && mkdir -p cmdline-tools/ \
+ && mv tools cmdline-tools/ \
+ && cd ${ANDROID_ROOT}/cmdline-tools/tools
+
+RUN cd ${ANDROID_ROOT}/cmdline-tools/tools \
  && yes | ./bin/sdkmanager --licenses \
  && ./bin/sdkmanager --install "tools" \
  && ./bin/sdkmanager --install "platform-tools" \
  && ./bin/sdkmanager --install "cmake;${CMAKE_VER}" \
- && ./bin/sdkmanager --install "ndk;${NDK_VER}" \
+ && ./bin/sdkmanager --install "ndk-bundle" \
  && ./bin/sdkmanager --install "platforms;android-${ANDROID_PLATFORM}" \
  && ./bin/sdkmanager --install "platforms;android-${ANDROID_TARGET_PLATFORM}" \
  && ./bin/sdkmanager --install "build-tools;${BUILD_TOOLS_VER}" \
@@ -107,7 +109,7 @@ RUN cd ${ANDROID_ROOT} \
 ENV NDK_TOOLCHAIN_DIR="${ANDROID_ROOT}/ndk_${NDK_VER}"
 ENV ANDROID_NDK_TOOLCHAIN_64="${NDK_TOOLCHAIN_DIR}"
 
-RUN cd ${ANDROID_ROOT}/sdk/ndk/${NDK_VER} \
+RUN cd ${ANDROID_ROOT}/ndk-bundle \
  && ./build/tools/make_standalone_toolchain.py \
     --arch arm64 --api ${ANDROID_PLATFORM} \
     --install-dir ${NDK_TOOLCHAIN_DIR}
@@ -123,9 +125,9 @@ ENV ECL_INCLUDE_DIR="${TARGET_ECL}/include"
 
 ENV ECL_ANDROID_64="${TARGET_ECL}"
 ENV ANDROID=1
-ENV PATH="${PATH}:${ANDROID_ROOT}/sdk/platform-tools"
+ENV PATH="${PATH}:${ANDROID_ROOT}/platform-tools"
 
-ENV ANDROID_HOME="${ANDROID_ROOT}/sdk"
+ENV ANDROID_HOME="${ANDROID_ROOT}"
 
 WORKDIR $HOME
 

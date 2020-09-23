@@ -30,7 +30,7 @@
 
 (defun save-dependencies (system-designator system)
   (let ((depends-on (map 'list #'makekw (asdf:system-depends-on system))))
-    (with-open-file (d *dependencies-location* :direction :output :if-exists :append)
+    (with-open-file (d *dependencies-location* :direction :output :if-exists :append :if-does-not-exist :create)
       (format d "~s (~{~s~^ ~})~%" system-designator depends-on))))
 
 (ext:package-lock :common-lisp nil)
@@ -58,7 +58,7 @@
 
 ;; load here (not earlier)
 (when (probe-file (format nil "~a/~a.deps" *pwd* *target*))
-  (format t "~&loading .deps file~%")
+  (format t "~&loading ~a.deps file~%" *target*)
   (load (format nil "~a/~a.deps" *pwd* *target*)))
 
 (push "./" asdf:*central-registry*)

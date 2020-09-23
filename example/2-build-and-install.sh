@@ -23,6 +23,7 @@ cd app/src/main/lisp/module \
 && ./gradlew build \
 && echo $((VER + 1)) > .version \
 && echo -n "Built version " && cat .version \
+&& echo "see apk in 'debug' or 'release' at app/build/outputs/apk/" \
 && if [ "$1" == "install" ]; then
 
     BASE_IP="${HOST_IP%.*}."
